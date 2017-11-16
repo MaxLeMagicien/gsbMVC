@@ -363,6 +363,50 @@ class PdoGsb {
         $requete_prepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requete_prepare->execute();
     }
-
+    
+    /**
+     * Retourne les annees pour lesquel un visiteur a une fiche de frais
+     * 
+     * @param $idVisiteur 
+     * @return un tableau associatif de clé un mois -aaaamm- et de valeurs l'année et le mois correspondant 
+     */
+    public function getLesAnneesDisponibles($idVisiteur) {
+        $requete_prepare = PdoGSB::$monPdo->prepare("SELECT DISTINCT substr(fichefrais.mois, 1, 4) AS annees "
+                . "FROM fichefrais "
+                . "WHERE fichefrais.idvisiteur = :unIdVisiteur "
+                . "ORDER BY substr(fichefrais.mois, 1, 4) desc");
+        $requete_prepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requete_prepare->execute();
+        $lesAnnees = array();
+        while ($laLigne = $requete_prepare->fetch()) {		
+            $annee = $laLigne['annees'];   
+            $lesAnnees["$annee"] = array(
+                "annee" => "$annee",
+            );
+        }
+        return $lesAnnees;
+    }
+    
+        /**
+     * Retourne sous forme d'un tableau associatif toutes les lignes de frais au forfait
+     * concernées par les deux arguments
+     * 
+     * @param $idVisiteur 
+     * @param $mois sous la forme aaaamm
+     * @return l'id, le libelle et la quantité sous la forme d'un tableau associatif 
+     */
+    public function getLesFraisAnnuels($idVisiteur, $annee) {
+        $requete_prepare = PdoGSB::$monPdo->prepare("SELECT fraisforfait.id as idfrais, "
+                . "fraisforfait.libelle as libelle, lignefraisforfait.quantite as quantite "
+                . "FROM lignefraisforfait "
+                . "INNER JOIN fraisforfait ON fraisforfait.id = lignefraisforfait.idfraisforfait "
+                . "WHERE lignefraisforfait.idvisiteur = :unIdVisiteur "
+                . "AND substr(lignefraisforfait.mois, 1, 4) = :uneAnnee "
+                . "ORDER BY lignefraisforfait.idfraisforfait");
+        $requete_prepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requete_prepare->bindParam(':uneAnnee', $annee, PDO::PARAM_STR);
+        $requete_prepare->execute();
+        return $requete_prepare->fetchAll();
+    }
 }
 ?>

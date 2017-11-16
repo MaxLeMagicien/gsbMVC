@@ -1,8 +1,13 @@
 <?php
+$action = $_POST['action'];
+$idVisiteur = $_SESSION['idVisiteur'];
+switch ($action) {
+    case 'voirStatAnnee': {
+            $lAnnee = $_POST['lstAnnee'];
+            $lesFraisAnnuels = $pdo->getLesFraisAnnuels($idVisiteur, $lAnnee);
+            include("vues/v_statAnnee.ajx.php");
+        }
+}
+?>
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 

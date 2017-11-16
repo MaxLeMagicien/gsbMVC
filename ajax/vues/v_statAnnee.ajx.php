@@ -1,8 +1,7 @@
-<?php
+<div class="panel panel-primary">
+    <div class="panel-heading">Frais remboursées de l'année <?php echo $annee ?> : </div>
+    <div class="panel-body">
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    </div>
+</div>
 

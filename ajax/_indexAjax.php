@@ -1,8 +1,18 @@
-<?php
+ <?php
+session_start();
+require_once("../include/fct.inc.php");
+require_once ("../include/class.pdogsb.inc.php");
+$pdo = PdoGsb::getPdoGsb();
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// Verifier qu'un utilisateur est connecté
+if ( estConnecte() && isset($_POST['uc']) ) {
+    $uc = $_POST['uc'];
 
+    switch ($uc) {
+        case 'statAnnee': {
+            include("controleurs/c_statAnnee.ajx.php");
+            break;
+        }
+    }
+}
+?>
